@@ -1,38 +1,37 @@
+
 class Player:
-    def __init__(self, max_health = 100, current_health = 100, damage = 10, level = 1, xp = 0, equipment = []):
+    def __init__(self, max_health = 100, current_health = 100, damage = 10, level = 1, xp = 0, max_xp = 100, equipment = []):
         self.max_health = max_health
         self.current_health = current_health
         self.damage = damage
         self.level = level
         self.xp = xp
+        self.max_xp = max_xp
         self.equipment = equipment
     
     # getter functions
-    def get_max_health(self):
+    def get_max_health(self): # MAX HEALTH
         return self.max_health
     
-    def get_current_health(self):
+    def get_current_health(self): # CURRENT HEALTH
         return self.current_health
     
-    def get_xp(self):
+    def get_xp(self): # XP
         return self.xp
     
-    def get_level(self):
+    def get_max_xp(self): # XP THRESHOLD
+        return self.max_xp
+    
+    def get_level(self): # LEVEL
         return self.level
     
-    def get_damage(self):
+    def get_damage(self): # DAMAGE
         return self.damage
     
-    def get_equipment(self):
+    def get_equipment(self): # EQUIPMENT
         return self.equipment
     
     # setter functions
-    def take_damage(self, damage):
-        self.current_health -= damage
-
-    def set_damage(self, weapon_damage):
-        self.damage = weapon_damage
-    
     def level_up(self):
         self.level += 1
         self.max_health = round(self.get_max_health() * 1.1)
@@ -41,20 +40,20 @@ class Player:
         self.xp += xp_gained
     
     def set_current_health(self, health):
-        self.health = health
+        self.current_health = health
+    
     # player functions
-    def __str__(self):
-        return f"PLAYER | HP {self.get_current_health()}/{self.get_max_health()} | LEVEL "
     def attack(self, other):
         other.take_damage(self.get_damage())
     
-    def take_damage(self, damage_taken):
-        health = self.get_current_health()
-        health = health - damage_taken
-        self.set_current_health(health)
+    def take_damage(self, damage):
+        self.set_current_health(self.get_current_health() - damage)
     
     def heal(self):
         heal_amount = 50
         if (heal_amount + self.get_current_health() > self.get_max_health()):
             self.set_current_health(self.get_max_health())
         self.current_health
+
+    def __str__(self):
+        return f"PLAYER | HP {self.get_current_health()}/{self.get_max_health()} | LEVEL {self.get_level()} | XP {self.get_xp()}/{self.get_max_xp()}"
