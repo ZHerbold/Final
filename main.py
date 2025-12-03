@@ -62,8 +62,9 @@ while True:
             break
         else:
             print("All enemies are dead. You Win!")
+            player.gain_experience(tower[current_floor].give_xp())
             current_floor = current_floor + 1
-            print("MOVING TO THE NEXT FLOOR!\nFLOOR", current_floor)
+            print("MOVING TO THE NEXT FLOOR!\nFLOOR", current_floor + 1)
     except ValueError:
         print("Please enter A or B to either attack the enemy or heal yourself.")
     except Exception as e:

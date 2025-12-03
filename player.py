@@ -36,10 +36,17 @@ class Player:
     # setter functions
     def level_up(self):
         self.level += 1
-        self.max_health = round(self.get_max_health() * 1.1)
+        self.max_health = round(self.get_max_health() * 1.15)
+    
+    def raise_max_xp(self):
+        self.max_xp = round(self.max_xp * 1.1)
     
     def gain_experience(self, xp_gained):
         self.xp += xp_gained
+        if self.get_xp() >= self.get_max_xp():
+            self.level_up()
+            self.xp = self.xp - self.get_max_xp()
+            self.raise_max_xp()
     
     def set_current_health(self, health):
         self.current_health = health

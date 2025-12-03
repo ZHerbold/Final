@@ -3,7 +3,7 @@ class Enemy:
     # Enemy variables
     ENEMY_TYPES = ["Zombie", "Skeleton", "Slime", "Mimic", "Ghost", "Living Armor", "Goblin", "Orc", "Golem"]
     
-    def __init__(self, type = "Undead", health = 50, damage = 5, level = 1):
+    def __init__(self, type = "Undead", health = 20, damage = 5, level = 1):
         self.type = type
         self.health = health
         self.damage = damage
