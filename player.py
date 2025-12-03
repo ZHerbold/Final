@@ -43,6 +43,8 @@ class Player:
     def set_current_health(self, health):
         self.health = health
     # player functions
+    def __str__(self):
+        return f"PLAYER | HP {self.get_current_health()}/{self.get_max_health()} | LEVEL "
     def attack(self, other):
         other.take_damage(self.get_damage())
     

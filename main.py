@@ -16,7 +16,8 @@ while True:
             enemies_alive = False
 
         if enemies_alive:
-            
+            # Print out user info
+            print(player)
             # Print out the enemy list
             selection_number = 1
             for enemy in enemy_list:
@@ -25,10 +26,12 @@ while True:
             print()
 
             # PLAYER TURN
-            attack_or_heal_choice = int(input("[1] Heal | [2] Attack Enemy: "))
-            if attack_or_heal_choice == 1:
+            attack_or_heal_choice = input("[A] Attack Enemy | [B] Heal: ").upper()
+            if attack_or_heal_choice == "B":
                 player.heal()
-            elif attack_or_heal_choice == 2:
+                print("The player has healed for 50 points!")
+                print(f"The player now has {player.get_current_health} / {player.get_max_health()}.")
+            elif attack_or_heal_choice == "A":
                 choice = int(input("Which enemy would you like to attack? "))
                 selected_enemy = enemy_list[choice - 1]
 
@@ -39,14 +42,18 @@ while True:
             else:
                 raise ValueError
             
-            # ENEMY TURN
             print()
+            # ENEMY TURN
+            for enemy in enemy_list:
+                if enemy.get_health() > 0:
+                    enemy.attack(player)
+                    print(enemy - 1)
 
         else:
             print("All enemies are dead. You Win!")
             break
     except ValueError:
-        print("Please enter 1 or 2 to either heal yourself or attack the enemy.")
+        print("Please enter A or B to either attack the enemy or heal yourself.")
     except Exception as e:
         print(f"An error occured: {e}")
 

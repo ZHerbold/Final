@@ -45,4 +45,6 @@ class Enemy:
             return f"{self.get_type()} : Level {self.get_level()} has {self.get_health()} health points left."
         else:
             return f"{self.get_type()} : Level {self.get_level()} is DEAD"
-
+    
+    def __sub__(self):
+        return f"{self.get_type()} : level {self.get_level()} has attacked the player for {self.get_damage()} health points!"
