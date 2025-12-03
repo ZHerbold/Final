@@ -1,11 +1,20 @@
 from enemy import Enemy
 from player import Player
+from floor import Floor
 
 player = Player()
-enemy_list = [Enemy(type = "Zombie"), Enemy(type = "Skeleton")]
+tower = []
+for i in range(10):
+    tower.append(Floor(i+1))
 
+tower_mob_list = []
+for floor in tower:
+    floor.spawn_mobs()
+    tower_mob_list.append(floor.get_mob_list())
+current_floor = 0
 while True:
     try:
+        enemy_list = tower_mob_list[current_floor]
         # checks if all enemies are alive or not
         enemies_alive = True
         player_alive = True
@@ -48,13 +57,13 @@ while True:
             for enemy in enemy_list:
                 if enemy.get_health() > 0:
                     enemy.attack(player)
-                    print(enemy - player)
         elif player_alive == False:
             print("YOU DIED!")
             break
         else:
             print("All enemies are dead. You Win!")
-            break
+            current_floor = current_floor + 1
+            print("MOVING TO THE NEXT FLOOR!\nFLOOR", current_floor)
     except ValueError:
         print("Please enter A or B to either attack the enemy or heal yourself.")
     except Exception as e:

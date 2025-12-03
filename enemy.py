@@ -1,4 +1,8 @@
+import random
 class Enemy:
+    # Enemy variables
+    ENEMY_TYPES = ["Zombie", "Skeleton", "Slime", "Mimic", "Ghost", "Living Armor", "Goblin", "Orc", "Golem"]
+    
     def __init__(self, type = "Undead", health = 50, damage = 5, level = 1):
         self.type = type
         self.health = health
@@ -38,13 +42,12 @@ class Enemy:
         self.set_health(health)
     
     def attack(self, other):
-        other.take_damage(self.get_damage())
+        damage = random.randint(self.get_damage()-2,self.get_damage())
+        other.take_damage(damage)
+        print(f"{self.get_type()} : level {self.get_level()} has attacked the level {other.get_level()} player for {damage} health points!")
         
     def __str__(self):
         if self.get_health() > 0:
-            return f"{self.get_type()} : Level {self.get_level()} has {self.get_health()} health points left."
+            return f"Level {self.get_level()} {self.get_type()} has {self.get_health()} health points left."
         else:
-            return f"{self.get_type()} : Level {self.get_level()} is DEAD"
-    
-    def __sub__(self, other):
-        return f"{self.get_type()} : level {self.get_level()} has attacked the {other.get_level()} player for {self.get_damage()} health points!"
+            return f"Level {self.get_level()} {self.get_type()} is DEAD"
