@@ -37,18 +37,34 @@ class Floor:
         difficulty = self.floor_number
         mob_level = (difficulty+1)//2
         # Increase mob health scaling slightly (but less than player's damage growth)
-        mob_health = (difficulty * 1.25) + 25
+        mob_health = (difficulty * 1.5) + 25
         # Reduce mob damage scaling so multiple enemies are less lethal
-        mob_damage = (difficulty * 0.7) + 3
+        mob_damage = (difficulty * 0.9) + 3
         mob_amount = ((difficulty+2)//3)
         
         if self.get_floor_number() < 10:
             for i in range(mob_amount+1):
-                enemy = Enemy(Enemy.ENEMY_TYPES[random.randint(0,(len(Enemy.ENEMY_TYPES)-1))], round(mob_health), round(mob_damage), mob_level)
-                #                           RANDOMIZED ENEMY TYPE                                         HEALTH       DAMAGE      LEVEL
+                enemy = Enemy(random.choice(Enemy.COMBAT_CLASSES), random.choice(Enemy.ENEMY_TYPES), round(mob_health), round(mob_health), round(mob_damage), mob_level)
+                enemy_combat_class = enemy.get_combat_class()
+                enemy_health = enemy.get_health()
+                match enemy_combat_class:
+                    case "FIGHTER":
+                        enemy_health *= 1.5
+                        enemy.set_damage(round(enemy.get_damage() * 1.1))
+                    case "MAGE":
+                        enemy_health *= 0.7
+                        enemy.set_damage(round(enemy.get_damage() * 1.5))
+                    case "ROGUE":
+                        enemy_health *= 0.9
+                        enemy.set_damage(round(enemy.get_damage() * 1.3))
+                    case "CLERIC":
+                        enemy_health *= 0.8
+                        enemy.set_damage(round(enemy.get_damage()* 0.4))
+                enemy.set_health(round(enemy_health))
+                enemy.set_max_health(enemy.get_health())
                 self.mob_list.append(enemy)
         elif self.get_floor_number() == 10:
-            enemy = Enemy("BOSS: Dragon", 600, 25, 10)
+            enemy = Enemy("BOSS","BOSS: Dragon", 600, 600, 25, 10)
             self.mob_list.append(enemy)
     
     def set_xp_given(self, xp_granted):

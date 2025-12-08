@@ -4,3 +4,8 @@ class InvalidGameChoice(Exception):
 class InvalidEnemyChoice(Exception):
     pass
 
+class QuitError(Exception):
+    pass
+
+class RestartError(Exception):
+    pass

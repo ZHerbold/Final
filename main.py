@@ -4,6 +4,31 @@ from player import Player
 from floor import Floor
 from customerrors import *
 import time
+import random
+
+def create_tower():
+    # creates the "tower" with 10 floors
+    tower = [] # tower list to hold floors
+
+    # loop 10 times to make 10 floors
+    for i in range(10):
+        # appends a floor to the list with the appropiate floor number
+        tower.append(Floor(i+1))
+
+    # create a empty list to hold list of mobs in it
+    tower_mob_list = []
+
+    # loop through each floor object in the tower list and create enemies
+    for floor in tower:
+        floor.spawn_mobs()
+        # adds the list of mob to the master list of mobs
+        tower_mob_list.append(floor.get_mob_list())
+
+    # sets the floor index to 0 (for list purposes). The "player-facing" floor number is 1, but 0 for indexing purposes
+    current_floor_index = 0
+
+    return tower, tower_mob_list, current_floor_index
+
 
 def load_tower_save(list):
     raw_info = list
@@ -14,32 +39,30 @@ def load_tower_save(list):
         for mob in raw_mob_list:
             mob_info = mob.split(",")
             if len(mob_info) != 1:
-                processed_floor_list.append(Enemy(str(mob_info[0]),int(mob_info[1]),int(mob_info[2]),int(mob_info[3])))
+                processed_floor_list.append(Enemy(str(mob_info[0]), str(mob_info[1]),int(mob_info[2]),int(mob_info[3]),int(mob_info[4]),int(mob_info[5])))
         processed_tower_list.append(processed_floor_list)
     return processed_tower_list
-        
+
+def save_to_file():
+    # SAVE THE TOWER INFO
+    print("SAVING")
+    savefile = open("towersave.txt", "w")
+    for floor_mob_list in tower_mob_list:
+        for mob in floor_mob_list:
+            savefile.write(f"{repr(mob)}|")
+        savefile.write("\n")
+    savefile.close()
+
+    # SAVE THE PLAYER INFO AND CURRENT FLOOR
+    savefile = open("playersave.txt", "w")
+    savefile.write(f"{repr(player)},{current_floor_index}")
+    savefile.close()
+    print("QUITTING\nGOODBYE")
+
 # Creates the player
 player = Player()
 
-# creates the "tower" with 10 floors
-tower = [] # tower list to hold floors
-
-# loop 10 times to make 10 floors
-for i in range(10):
-    # appends a floor to the list with the appropiate floor number
-    tower.append(Floor(i+1))
-
-# create a empty list to hold list of mobs in it
-tower_mob_list = []
-
-# loop through each floor object in the tower list and create enemies
-for floor in tower:
-    floor.spawn_mobs()
-    # adds the list of mob to the master list of mobs
-    tower_mob_list.append(floor.get_mob_list())
-
-# sets the floor index to 0 (for list purposes). The "player-facing" floor number is 1, but 0 for indexing purposes
-current_floor_index = 0
+tower, tower_mob_list, current_floor_index = create_tower()
 
 # loop to load a save file
 while True:
@@ -61,8 +84,8 @@ while True:
             break
         else:
             playerinfo = playersave[0].split(",")
-            player.load_save(int(playerinfo[0]),int(playerinfo[1]),int(playerinfo[2]),int(playerinfo[3]),int(playerinfo[4]),int(playerinfo[5]),eval(playerinfo[6]))
-            current_floor_index = int(playerinfo[7])
+            player.load_save(int(playerinfo[0]),int(playerinfo[1]),int(playerinfo[2]),int(playerinfo[3]),int(playerinfo[4]),int(playerinfo[5]),eval(playerinfo[6]),str(playerinfo[7]))
+            current_floor_index = int(playerinfo[8])
             tower_mob_list = load_tower_save(towersave)
             i = 0
             for floor in tower:
@@ -101,9 +124,7 @@ while True:
         if enemies_alive and player_alive:
             # Print out user info and floor number
             print(f"\n\nFLOOR {tower[current_floor_index].get_floor_number()}")
-            time.sleep(1)
             print(player)
-            time.sleep(1)
             print()
             # Print out the enemy list
             selection_number = 1
@@ -111,16 +132,15 @@ while True:
                 print(f"[{selection_number}] {enemy}")
                 selection_number += 1
             print()
-            time.sleep(1)
 
             # PLAYER TURN
-            attack_or_heal_choice = input("[A] Attack Enemy | [B] Heal | [Q] Save and Quit: ").upper()
-            if attack_or_heal_choice == "B":
+            game_choice = input("[A] Attack Enemy | [B] Heal | [Q] Save and Quit: ").upper()
+            if game_choice == "B":
                 player.heal()
                 print("The player has healed for 50 points!")
                 print(f"The player now has {player.get_current_health()} / {player.get_max_health()}.")
-                time.sleep(2)
-            elif attack_or_heal_choice == "A":
+                time.sleep(1)
+            elif game_choice == "A":
                 choice = int(input("Which enemy would you like to attack? "))
                 if 0 <= choice and choice <= len(enemy_list):
                     selected_enemy = enemy_list[choice - 1]
@@ -132,19 +152,8 @@ while True:
                         time.sleep(1)
                 else:
                     raise InvalidEnemyChoice
-            elif attack_or_heal_choice == "Q":
-                # SAVE THE TOWER INFO
-                savefile = open("towersave.txt", "w")
-                for floor_mob_list in tower_mob_list:
-                    for mob in floor_mob_list:
-                        savefile.write(f"{repr(mob)}|")
-                    savefile.write("\n")
-                savefile.close()
-
-                # SAVE THE PLAYER INFO AND CURRENT FLOOR
-                savefile = open("playersave.txt", "w")
-                savefile.write(f"{repr(player)},{current_floor_index}")
-                savefile.close()
+            elif game_choice == "Q":
+                save_to_file()
                 break
             else:
                 raise InvalidGameChoice
@@ -154,38 +163,77 @@ while True:
             # ENEMY TURN
             for enemy in enemy_list:
                 if enemy.get_health() > 0:
+                    if enemy.get_combat_class() == "CLERIC":
+                        list_of_valid_enemies = [mob for mob in enemy_list if mob.get_health() > 0]
+                        heal_choice = random.choice(list_of_valid_enemies)
+                        enemy.heal(heal_choice)
+                        time.sleep(1)
                     enemy.attack(player)
-                    time.sleep(0.5)
+                    time.sleep(1)
                     print(f"You have {player.get_current_health()} health points left.")
+                    time.sleep(1)
+            time.sleep(1)
         elif player_alive == False:
             print("YOU DIED!")
-            break
+            quit_choice = input("Quit? (y/n)")
+            if quit_choice.lower() == "y":
+                save_to_file()
+                break
+            elif quit_choice.lower() == "n":
+                restart_choice = input("[1] Retry floor or [2] restart? ")
+                if restart_choice == "1":
+                    for enemy in enemy_list:
+                        enemy.set_health(enemy.get_max_health())
+                    player.set_current_health(player.get_max_health())
+                    print(f"RETRYING FLOOR {tower[current_floor_index].get_floor_number()}")
+                elif restart_choice == "2":
+                    player.reset()
+                    tower, tower_mob_list, current_floor_index = create_tower()
+                else:
+                    raise RestartError
+            else:
+                raise QuitError
+            
         else:
             print("All enemies are dead. You Cleared This Floor!")
             time.sleep(1)
-            if player.gain_experience(tower[current_floor_index].give_xp()):
-                print(f"LEVEL UP! You are now level {player.get_level()}!")
+            player.gain_experience(tower[current_floor_index].give_xp())
             time.sleep(1)
             current_floor_index = current_floor_index + 1
+            if current_floor_index == 4:
+                print("You have acquired the steel sword!")
+                player.equip("Steel Sword", 1.4)
+                time.sleep(1)
+            if current_floor_index == 9:
+                print("You have acquired the dragon slaying sword!")
+                player.equip("Dragon Slaying Sword", 1.75)
+                time.sleep(1)
             if current_floor_index < 10:
                 print("MOVING TO THE NEXT FLOOR!\nFLOOR", current_floor_index + 1)
-                time.sleep(1)
+                time.sleep(2)
             else:
                 print("YOU WIN!!!!!")
+                time.sleep(1)
+                save_to_file()
                 break
     except ValueError:
         print("Please enter a number to attack any of the enemy (e.g., to attack [1] Skeleton, type 1 and press enter).")
-        time.sleep(0.5)
+        time.sleep(1)
     except InvalidEnemyChoice:
         if choice > len(enemy_list):
             print(f"There are only {len(enemy_list)} enemies. Please select one of them.")
-            time.sleep(0.5)
+            time.sleep(1)
         elif choice <= 0:
             print("Please enter a positive number.")
-            time.sleep(0.5)
+            time.sleep(1)
     except InvalidGameChoice:
         print("Please enter 'A' or 'B' to either attack the enemy or heal yourself or 'Q' to save and quit.")
-        time.sleep(0.5)
+        time.sleep(1)
+    except QuitError:
+        print("Please enter either 'y' or 'n' in order to quit or restart/retry.")
+        time.sleep(1)
+    except RestartError:
+        print("Please enter either 1 or 2 to retry the floor or restart the tower.")
     except Exception as e:
         print(f"An error occured: {e}")
         time.sleep(1)
