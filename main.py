@@ -102,7 +102,7 @@ while True:
 
         # checks for empty file and exits loop without trying to load file
         if len(playersave) == 0 or len(towersave) == 0:
-            break
+            raise EmptySaveFile
         # loads the player info into the player
         else:
             # splits the player save into list of stats
@@ -121,6 +121,10 @@ while True:
                 i += 1
             break
     # Throws exception if there is no file found and exits loop
+    except EmptySaveFile:
+        print("Empty save file found, starting new game!")
+        time.sleep(1)
+        break
     except Exception as e:
         print("ERROR:",e)
         print("No save file found, starting new game!")
@@ -223,7 +227,6 @@ while True:
                     # lets the player know their current health every time they get attacked
                     print(f"You have {player.get_current_health()} health points left.")
                     time.sleep(1)
-            time.sleep(1)
         # If the player is dead, lets them know
         elif player_alive == False:
             print("YOU DIED!")
@@ -284,7 +287,7 @@ while True:
             if current_floor_index < 10:
                 # lets the player know what floor they are moving to now
                 print("MOVING TO THE NEXT FLOOR!\nFLOOR", current_floor_index + 1)
-                time.sleep(2)
+                time.sleep(1)
             # this will only run on "floor 11", which doesnt exist so tells the player they win
             else:
                 print("YOU WIN!!!!!")

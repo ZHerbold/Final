@@ -17,3 +17,6 @@ class RestartError(Exception):
 
 class DeadEnemyError(Exception):
     pass
+
+class EmptySaveFile(Exception):
+    pass
