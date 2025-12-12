@@ -24,7 +24,7 @@ To run this program, install all .py files (main.py, player.py, enemy.py, floor.
 
 
 
-This project is a simple text based game where you, the player, will fight monsters in a tower.
+This project is a simple console based game where you, the player, will fight monsters in a tower.
 
 Everytime you beat all of the enemies on a floor, you will gain experience and move to the next floor
 
