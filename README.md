@@ -40,3 +40,7 @@ This program was written to demonstrate Zander Herbold's understanding of OOP, m
 The proposal of this project can be found here: [Project Proposal](https://docs.google.com/document/d/17pAjdDT7lbv4gHvbbwltwdBfE3rNMzMZOnLfvYtejhs/edit?usp=sharing) 
 
 The project presentation youtube link: LINK HERE
+# EXAMPLE OUTPUT 
+
+(RUNNING THIS PROGRAM FOR THE FIRST TIME SHOULD OUTPUT SOMETHING LIKE THIS)
+<img width="718" height="272" alt="Screenshot 2025-12-11 220929" src="https://github.com/user-attachments/assets/5c634e77-29b8-4304-b4d0-fe246d749a91" />
