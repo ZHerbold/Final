@@ -186,7 +186,7 @@ while True:
                 # asks the player which mob they want to attack
                 choice = int(input("Which enemy would you like to attack? "))
                 # checks if the choice is valid and not negative
-                if 0 <= choice and choice <= len(enemy_list):
+                if 0 < choice and choice <= len(enemy_list):
                     # attacks the selected enemy
                     selected_enemy = enemy_list[choice - 1]
                     # checks if the enemy is still alive, and if so, attacks them
@@ -323,7 +323,7 @@ while True:
             time.sleep(1)
         # player entered a negative number or 0
         elif choice <= 0:
-            print("Please enter a positive number.")
+            print("Please enter a nonzero positive number.")
             time.sleep(1)
     except InvalidGameChoice: # PLAYER DID NOT PICK A VALID GAME CHOICE (ENTERED ANYTHING OTHER THAN "A", "B", or "Q")
         print("Please enter 'A' or 'B' to either attack the enemy or heal yourself or 'Q' to save and quit.")
