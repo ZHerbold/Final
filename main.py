@@ -88,12 +88,12 @@ tower, tower_mob_list, current_floor_index = create_tower()
 # loop to load a save file
 while True:
     try:
-        # save player info into memory
+        # loading player info into memory
         savefile = open("playersave.txt", "r")
         playersave = savefile.readlines()
         savefile.close()
 
-        # save tower info into memory
+        # loading tower info into memory
         towersave = []
         with open("towersave.txt", "r") as file:
             for line in file:
